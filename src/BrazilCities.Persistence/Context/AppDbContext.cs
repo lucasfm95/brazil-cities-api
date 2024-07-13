@@ -1,17 +1,19 @@
 using BrazilCities.Domain.Entities;
-using BrazilCities.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace BrazilCities.Persistence.Context;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
+public class AppDbContext : DbContext
 {
     public DbSet<CityEntity> Cities { get; set; }
     public DbSet<StateEntity> States { get; set; }
     
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CityConfiguration).Assembly);
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(StateConfiguration).Assembly);
+        if (!optionsBuilder.IsConfigured)
+            optionsBuilder.UseNpgsql(Environment.GetEnvironmentVariable("CONNECTION_STRING_DB_POSTGRES"));
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder) =>
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 }

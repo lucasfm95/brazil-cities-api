@@ -1,8 +1,8 @@
 namespace BrazilCities.Domain.Entities;
 
-public class StateEntity
+public class StateEntity : BaseEntity
 {
-    public int Id { get; set; }
     public string? StateAcronym { get; set; }
     public string? Name { get; set; }
+    public IEnumerable<CityEntity>? Cities { get; set; }
 }

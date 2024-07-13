@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="AspNetCore.HealthChecks.NpgSql" Version="8.0.1" />
-        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     </ItemGroup>
 
     <ItemGroup>
