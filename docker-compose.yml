@@ -1,0 +1,48 @@
+name: "brazil-cities"
+services:
+  brazil-cities-api:
+    container_name: brazil-cities-api
+    image: brazil-cities-api:1
+    environment:
+      - CONNECTION_STRING_DB_POSTGRES=Host=postgres;Port=5432;Username=brazil-cities-api;Password=Dw4txvV0;Database=cities
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        version: 1
+    restart: always
+    ports:
+      - 8888:80
+    networks:
+      - brazil-cities-network
+    depends_on:
+      - postgres
+  postgres:
+    container_name: postgres2
+    image: postgres
+    environment:
+      POSTGRES_USER: brazil-cities-api
+      POSTGRES_PASSWORD: Dw4txvV0
+      POSTGRES_DB: cities
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data   
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - brazil-cities-network
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 5433:8080
+    networks:
+      - brazil-cities-network
+    depends_on:
+      - postgres
+volumes:
+  postgres-db-volume:
+    external: false
+networks:
+  brazil-cities-network:
+    driver: bridge

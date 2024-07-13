@@ -1,4 +1,5 @@
 using BrazilCities.Domain.Entities;
+using BrazilCities.Persistence.Configuration;
 using Microsoft.EntityFrameworkCore;
 
 namespace BrazilCities.Persistence.Context;
@@ -10,6 +11,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        //modelBuilder.ApplyConfigurationsFromAssembly(typeof(ContactConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(CityConfiguration).Assembly);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(StateConfiguration).Assembly);
     }
 }

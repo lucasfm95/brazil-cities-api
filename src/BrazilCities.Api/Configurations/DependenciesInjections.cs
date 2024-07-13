@@ -9,8 +9,8 @@ public static class DependenciesInjections
 {
     internal static void AddRepositories(this IServiceCollection services)
     {
-        services.AddSingleton<IStateRepository, StateRepository>();
-        services.AddSingleton<ICityRepository, CityRepository>();
+        services.AddScoped<IStateRepository, StateRepository>();
+        services.AddScoped<ICityRepository, CityRepository>();
     }
     
     internal static void AddServices(this IServiceCollection services)

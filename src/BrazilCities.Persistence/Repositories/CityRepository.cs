@@ -1,7 +1,7 @@
 using BrazilCities.Application.Repositories;
 using BrazilCities.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+using BrazilCities.Persistence.Context;
 
 namespace BrazilCities.Persistence.Repositories;
 
-public sealed class CityRepository(DbContext context) : RepositoryBase<CityEntity>(context), ICityRepository;
+public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<CityEntity>(appDbContext), ICityRepository;
