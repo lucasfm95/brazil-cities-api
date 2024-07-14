@@ -5,7 +5,7 @@ using BrazilCities.Domain.Requests.City;
 
 namespace BrazilCities.Application.Services;
 
-public class CityService(ICityRepository cityRepository) : ICityService
+public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
 {
     public async Task<IEnumerable<CityEntity>> GetAllAsync(CancellationToken cancellationToken)
     {
@@ -19,9 +19,17 @@ public class CityService(ICityRepository cityRepository) : ICityService
     
     public async Task<CityEntity> CreateAsync(CityPostRequest cityPostRequest, CancellationToken cancellationToken)
     {
+        var state = await stateRepository.FindByAcronymAsync(cityPostRequest.StateAcronym, cancellationToken);
+        
+        if (state is null)
+        {
+            throw new ($"State with acronym {cityPostRequest.StateAcronym} not found.");
+        }
+        
         var city = new CityEntity
         {
             Name = cityPostRequest.Name,
+            StateId = state.Id,
         };
         
         return await cityRepository.CreateAsync(city, cancellationToken);

@@ -4,10 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BrazilCities.Persistence.Repositories;
 
-public abstract class RepositoryBase<T>(AppDbContext appDbContext) : IRepository<T>
-    where T : class 
+public abstract class RepositoryBase<T>(AppDbContext appDbContext) : IRepository<T> where T : class
 {
-    private readonly DbSet<T> _dbSet = appDbContext.Set<T>();
+    protected readonly DbSet<T> _dbSet = appDbContext.Set<T>();
     public async Task<IEnumerable<T>> FindAllAsync(CancellationToken cancellationToken = default)
     {
         return await _dbSet.ToListAsync(cancellationToken);
