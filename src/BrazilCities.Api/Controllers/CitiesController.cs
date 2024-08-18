@@ -9,13 +9,13 @@ namespace BrazilCities.Api.Controllers;
 public class CitiesController(ILogger<CitiesController> logger, ICityService cityService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] string? stateAcronym, CancellationToken cancellationToken)
     {
-        var cities = await cityService.GetAllAsync(cancellationToken);
+        var cities = await cityService.GetAllAsync(name, stateAcronym, cancellationToken);
         return Ok(cities);
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
     {
         var city = await cityService.GetByIdAsync(id, cancellationToken);
@@ -27,7 +27,7 @@ public class CitiesController(ILogger<CitiesController> logger, ICityService cit
         
         return Ok(city);
     }
-
+    
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CityPostRequest cityPostRequest, CancellationToken cancellationToken)
     {

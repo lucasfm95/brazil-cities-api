@@ -4,5 +4,5 @@ namespace BrazilCities.Application.Repositories;
 
 public interface ICityRepository : IRepository<CityEntity>
 {
-    Task<IEnumerable<CityEntity>> FindAllCityWithState(CancellationToken cancellationToken);
+    Task<List<CityEntity>> FindAllQueryParams(string? name, string? stateAcronym, CancellationToken cancellationToken);
 }

@@ -7,8 +7,22 @@ namespace BrazilCities.Persistence.Repositories;
 
 public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<CityEntity>(appDbContext), ICityRepository
 {
-    public async Task<IEnumerable<CityEntity>> FindAllCityWithState(CancellationToken cancellationToken)
+    public async Task<List<CityEntity>> FindAllQueryParams(string? name, string? stateAcronym, CancellationToken cancellationToken)
     {
-        return await DbSet.Include("State").ToListAsync(cancellationToken);
+        IQueryable<CityEntity> query = DbSet;
+        
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            query = query.Where(city => city.Name!.ToLower().Contains(name.ToLower()));
+        }
+        
+        if (!string.IsNullOrWhiteSpace(stateAcronym))
+        {
+            query = query.Where(city => city.State!.StateAcronym!.ToLower().Contains(stateAcronym.ToLower()));
+        }
+        
+        query = query.Include("State");
+        
+        return await query.ToListAsync(cancellationToken);
     }
 }
