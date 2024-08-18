@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BrazilCities.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class CitiesController(ILogger<CitiesController> logger, ICityService cityService) : ControllerBase
 {
@@ -32,7 +33,7 @@ public class CitiesController(ILogger<CitiesController> logger, ICityService cit
     {
         var city = await cityService.CreateAsync(cityPostRequest, cancellationToken);
         
-        return Created($"/api/cities/{city.Id}", city);
+        return Created($"/api/cities/{city?.Id}", city);
     }
     
     [HttpPut("{id}")]

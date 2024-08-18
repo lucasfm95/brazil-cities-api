@@ -2,19 +2,22 @@ using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Entities;
 using BrazilCities.Domain.Requests.State;
+using BrazilCities.Domain.Responses.State;
 
 namespace BrazilCities.Application.Services;
 
 public sealed class StateService(IStateRepository stateRepository) : IStateService
 {
-    public async Task<IEnumerable<StateEntity>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<StateResponse>> GetAllAsync(CancellationToken cancellationToken)
     {
-        return await stateRepository.FindAllAsync(cancellationToken);
+        var states = await stateRepository.FindAllAsync(cancellationToken);
+        
+        return states.Select(ToStateResponse);
     }
 
     public async Task<StateEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return await  stateRepository.FindByIdAsync(id, cancellationToken);
+        return await stateRepository.FindByIdAsync(id, cancellationToken);
     }
 
     public async Task<StateEntity?> GetByAcronymAsync(string acronym, CancellationToken cancellationToken)
@@ -55,5 +58,17 @@ public sealed class StateService(IStateRepository stateRepository) : IStateServi
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         return await stateRepository.DeleteAsync(id, cancellationToken);
+    }
+    
+    private StateResponse ToStateResponse(StateEntity stateEntity)
+    {
+        return new StateResponse
+        {
+            Id = stateEntity.Id,
+            Name = stateEntity.Name,
+            Acronym = stateEntity.StateAcronym,
+            CreatedAt = stateEntity.CreatedAt,
+            UpdatedAt = stateEntity.UpdatedAt
+        };
     }
 }

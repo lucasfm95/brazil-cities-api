@@ -9,6 +9,6 @@ public sealed class StateRepository(AppDbContext appDbContext) : RepositoryBase<
 {
     public async Task<StateEntity?> FindByAcronymAsync(string acronym, CancellationToken cancellationToken)
     {
-        return await _dbSet.FirstOrDefaultAsync(state => state.StateAcronym  == acronym.ToUpper(), cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(state => state.StateAcronym  == acronym.ToUpper(), cancellationToken);
     }
 }

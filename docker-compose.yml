@@ -2,44 +2,38 @@ name: "brazil-cities"
 services:
   brazil-cities-api:
     container_name: brazil-cities-api
-    image: brazil-cities-api:1
+    image: brazil-cities-api:latest
     environment:
-      - CONNECTION_STRING_DB_POSTGRES=Host=postgres;Port=5432;Username=brazil-cities-api;Password=Dw4txvV0;Database=cities
+      - CONNECTION_STRING_DB_POSTGRES=${CONNECTION_STRING_DB_POSTGRES}
     build:
       context: ./
       dockerfile: Dockerfile
       args:
-        version: 1
-    restart: always
+        version: latest
+    restart: unless-stopped
     ports:
-      - 8888:80
+      - 8080:80
     networks:
       - brazil-cities-network
     depends_on:
       - postgres
+
   postgres:
-    container_name: postgres2
+    container_name: postgresDB
     image: postgres
     environment:
-      POSTGRES_USER: brazil-cities-api
-      POSTGRES_PASSWORD: Dw4txvV0
-      POSTGRES_DB: cities
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data   
-    restart: always
+      - postgres-db-volume:/var/lib/postgresql/data
+      - ./postgres/:/docker-entrypoint-initdb.d/
+    restart: unless-stopped
     ports:
       - 5432:5432
     networks:
       - brazil-cities-network
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 5433:8080
-    networks:
-      - brazil-cities-network
-    depends_on:
-      - postgres
+
 volumes:
   postgres-db-volume:
     external: false

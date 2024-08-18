@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace BrazilCities.Domain.Entities;
 
 public class StateEntity : BaseEntity

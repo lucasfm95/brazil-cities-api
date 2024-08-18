@@ -6,39 +6,47 @@ namespace BrazilCities.Persistence.Repositories;
 
 public abstract class RepositoryBase<T>(AppDbContext appDbContext) : IRepository<T> where T : class
 {
-    protected readonly DbSet<T> _dbSet = appDbContext.Set<T>();
+    protected readonly DbSet<T> DbSet = appDbContext.Set<T>();
     public async Task<IEnumerable<T>> FindAllAsync(CancellationToken cancellationToken = default)
     {
-        return await _dbSet.ToListAsync(cancellationToken);
+        return await DbSet.ToListAsync(cancellationToken);
     }
 
     public async Task<T?> FindByIdAsync(int id, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FindAsync(id, cancellationToken);
+        return await DbSet.FindAsync(id, cancellationToken);
     }
 
     public async Task<T> CreateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(entity, cancellationToken: cancellationToken);
-        await appDbContext.SaveChangesAsync(cancellationToken: cancellationToken);
-        return entity;
+        try
+        {
+            await DbSet.AddAsync(entity, cancellationToken: cancellationToken);
+            await appDbContext.SaveChangesAsync(cancellationToken: cancellationToken);
+            return entity;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public async Task<bool> UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _dbSet.Update(entity);
+        DbSet.Update(entity);
         await appDbContext.SaveChangesAsync(cancellationToken: cancellationToken);
         return true;
     }
 
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken = default)
     {
-        var entity = await _dbSet.FindAsync(id, cancellationToken);
+        var entity = await DbSet.FindAsync(id, cancellationToken);
         if (entity == null)
         {
             return false;
         }
-        _dbSet.Remove(entity);
+        DbSet.Remove(entity);
         await appDbContext.SaveChangesAsync(cancellationToken);
         return true;
     }
