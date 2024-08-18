@@ -9,9 +9,9 @@ namespace BrazilCities.Api.Controllers;
 public class CitiesController(ILogger<CitiesController> logger, ICityService cityService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] string? name, [FromQuery] string? stateAcronym, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromQuery]QueryParameters queryParameters , CancellationToken cancellationToken)
     {
-        var cities = await cityService.GetAllAsync(name, stateAcronym, cancellationToken);
+        var cities = await cityService.GetAllAsync(queryParameters, cancellationToken);
         return Ok(cities);
     }
 
@@ -36,7 +36,7 @@ public class CitiesController(ILogger<CitiesController> logger, ICityService cit
         return Created($"/api/cities/{city?.Id}", city);
     }
     
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] CityPutRequest cityPutRequest, CancellationToken cancellationToken)
     {
         var result = await cityService.UpdateAsync(cityPutRequest, cancellationToken);
@@ -49,7 +49,7 @@ public class CitiesController(ILogger<CitiesController> logger, ICityService cit
         return BadRequest();
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await cityService.DeleteAsync(id, cancellationToken);

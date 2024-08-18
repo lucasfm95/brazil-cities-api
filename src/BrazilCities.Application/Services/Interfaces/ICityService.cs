@@ -6,7 +6,7 @@ namespace BrazilCities.Application.Services.Interfaces;
 
 public interface ICityService
 {
-    Task<IEnumerable<CityResponse?>> GetAllAsync(string? name, string? stateAcronym, CancellationToken cancellationToken);
+    Task<IEnumerable<CityResponse?>> GetAllAsync(QueryParameters queryParameters, CancellationToken cancellationToken);
     Task<CityResponse?> GetByIdAsync(int id, CancellationToken cancellationToken);
     Task<CityResponse?> CreateAsync(CityPostRequest cityPostRequest, CancellationToken cancellationToken);
     Task<bool> UpdateAsync(CityPutRequest cityPutRequest, CancellationToken cancellationToken);

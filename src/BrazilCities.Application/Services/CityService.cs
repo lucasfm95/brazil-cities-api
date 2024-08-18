@@ -9,9 +9,9 @@ namespace BrazilCities.Application.Services;
 
 public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
 {
-    public async Task<IEnumerable<CityResponse?>> GetAllAsync(string? name, string? stateAcronym, CancellationToken cancellationToken)
+    public async Task<IEnumerable<CityResponse?>> GetAllAsync(QueryParameters queryParameters, CancellationToken cancellationToken)
     {
-        var cities = await cityRepository.FindAllQueryParams(name, stateAcronym, cancellationToken);
+        var cities = await cityRepository.FindAllQueryParams(queryParameters, cancellationToken);
         
         var cityResponses = cities.Select(ToCityResponse);
         
