@@ -1,23 +1,15 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine as build
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["BrazilCities.Api/BrazilCities.Api.csproj", "BrazilCities.Api/"]
-RUN dotnet restore "BrazilCities.Api/BrazilCities.Api.csproj"
 COPY . .
-WORKDIR "/src/BrazilCities.Api"
-RUN dotnet build "BrazilCities.Api.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet restore
+RUN dotnet publish -o /app/published-app
 
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "BrazilCities.Api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine as runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BrazilCities.Api.dll"]
+COPY --from=build /app/published-app /app
+
+ENV ASPNETCORE_ENVIRONMENT=production
+ENV ASPNETCORE_HTTP_PORTS=80
+EXPOSE 80
+
+ENTRYPOINT [ "dotnet", "/app/BrazilCities.Api.dll" ]
