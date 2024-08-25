@@ -9,25 +9,25 @@ namespace BrazilCities.Persistence.Repositories;
 
 public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<CityEntity>(appDbContext), ICityRepository
 {
-    public async Task<List<CityEntity>> FindAllQueryParams(QueryParameters queryParameters, CancellationToken cancellationToken)
+    public async Task<List<CityEntity>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
         var query = DbSet.Include("State");
 
-        if (!string.IsNullOrWhiteSpace(queryParameters.Name))
-            query = FilterByName(queryParameters, query);
+        if (!string.IsNullOrWhiteSpace(queryParametersCity.Name))
+            query = FilterByName(queryParametersCity, query);
 
-        if (!string.IsNullOrWhiteSpace(queryParameters.StateAcronym))
-            query = FilterByStateAcronym(queryParameters, query);
+        if (!string.IsNullOrWhiteSpace(queryParametersCity.StateAcronym))
+            query = FilterByStateAcronym(queryParametersCity, query);
 
-        query = Sort(queryParameters, query);
+        query = Sort(queryParametersCity, query);
 
-        query = Pagination(queryParameters, query);
+        query = Pagination(queryParametersCity, query);
 
         return await query.ToListAsync(cancellationToken);
     }
 
-    private static Expression<Func<CityEntity, object>> GetSortProperty(QueryParameters queryParameters) =>
-        queryParameters.SortColumn?.ToLower() switch
+    private static Expression<Func<CityEntity, object>> GetSortProperty(QueryParametersCity queryParametersCity) =>
+        queryParametersCity.SortColumn?.ToLower() switch
         {
             "id" => city => city.Id,
             "name" => city => city.Name ?? string.Empty,
@@ -35,17 +35,17 @@ public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<C
             _ => city => city.Id
         };
 
-    private static IQueryable<CityEntity> Sort(QueryParameters queryParameters, IQueryable<CityEntity> query) =>
-        queryParameters.SortOrder?.ToLower() == "desc"
-            ? query.OrderByDescending(GetSortProperty(queryParameters))
-            : query.OrderBy(GetSortProperty(queryParameters));
+    private static IQueryable<CityEntity> Sort(QueryParametersCity queryParametersCity, IQueryable<CityEntity> query) =>
+        queryParametersCity.SortOrder?.ToLower() == "desc"
+            ? query.OrderByDescending(GetSortProperty(queryParametersCity))
+            : query.OrderBy(GetSortProperty(queryParametersCity));
 
-    private static IQueryable<CityEntity> Pagination(QueryParameters queryParameters, IQueryable<CityEntity> query) =>
-        query.Skip((queryParameters.Page - 1) * queryParameters.PageSize).Take(queryParameters.PageSize);
+    private static IQueryable<CityEntity> Pagination(QueryParametersCity queryParametersCity, IQueryable<CityEntity> query) =>
+        query.Skip((queryParametersCity.Page - 1) * queryParametersCity.PageSize).Take(queryParametersCity.PageSize);
 
-    private static IQueryable<CityEntity> FilterByName(QueryParameters queryParameters, IQueryable<CityEntity> query) =>
-        query.Where(city => city.Name!.ToLower().Contains(queryParameters.Name!.ToLower()));
+    private static IQueryable<CityEntity> FilterByName(QueryParametersCity queryParametersCity, IQueryable<CityEntity> query) =>
+        query.Where(city => city.Name!.ToLower().Contains(queryParametersCity.Name!.ToLower()));
 
-    private static IQueryable<CityEntity> FilterByStateAcronym(QueryParameters queryParameters, IQueryable<CityEntity> query) =>
-        query.Where(city => city.State!.StateAcronym!.ToLower().Contains(queryParameters.StateAcronym!.ToLower()));
+    private static IQueryable<CityEntity> FilterByStateAcronym(QueryParametersCity queryParametersCity, IQueryable<CityEntity> query) =>
+        query.Where(city => city.State!.StateAcronym!.ToLower().Contains(queryParametersCity.StateAcronym!.ToLower()));
 }

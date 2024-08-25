@@ -1,4 +1,5 @@
 using BrazilCities.Application.Services.Interfaces;
+using BrazilCities.Domain.Requests.City;
 using BrazilCities.Domain.Requests.State;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,13 +9,13 @@ namespace BrazilCities.Api.Controllers;
 public class StatesController(ILogger<StatesController> logger, IStateService stateService) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromQuery] QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
-        var states = await stateService.GetAllAsync(cancellationToken);
+        var states = await stateService.GetAllAsync(queryParametersState, cancellationToken);
         return Ok(states);
     }
     
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<IActionResult> Get(int id, CancellationToken cancellationToken)
     {
         var state = await stateService.GetByIdAsync(id, cancellationToken);
@@ -48,7 +49,7 @@ public class StatesController(ILogger<StatesController> logger, IStateService st
         return Created($"/api/states/{state.Id}", state);
     }
     
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] StatePutRequest statePutRequest, CancellationToken cancellationToken)
     {
         var result = await stateService.UpdateAsync(id, statePutRequest, cancellationToken);
@@ -61,7 +62,7 @@ public class StatesController(ILogger<StatesController> logger, IStateService st
         return BadRequest();
     }
     
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await stateService.DeleteAsync(id, cancellationToken);

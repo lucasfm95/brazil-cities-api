@@ -1,9 +1,7 @@
-namespace BrazilCities.Domain.Requests.City;
+namespace BrazilCities.Domain.Requests;
 
-public class QueryParameters
+public class QueryParametersBase
 {
-    public string? Name { get; set; }
-    public string? StateAcronym { get; set; }
     public string? SortColumn { get; set; }
     public string? SortOrder { get; set; }
     public int Page { get; set; } = 1;

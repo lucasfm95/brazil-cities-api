@@ -8,9 +8,9 @@ namespace BrazilCities.Application.Services;
 
 public sealed class StateService(IStateRepository stateRepository) : IStateService
 {
-    public async Task<IEnumerable<StateResponse>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<StateResponse>> GetAllAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
-        var states = await stateRepository.FindAllAsync(cancellationToken);
+        var states = await stateRepository.FindAllQueryParametersAsync(queryParametersState, cancellationToken);
         
         return states.Select(ToStateResponse);
     }
