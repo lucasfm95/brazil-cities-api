@@ -2,6 +2,7 @@
 
 This is a .NET 8 project that provides a RESTful API for managing Brazil cities. The project is written in C# and uses several technologies and frameworks.
 
+[![Build](https://github.com/lucasfm95/brazil-cities-api/actions/workflows/build.yml/badge.svg)](https://github.com/lucasfm95/brazil-cities-api/actions/workflows/build.yml)
 
 ## Technologies Used
 
