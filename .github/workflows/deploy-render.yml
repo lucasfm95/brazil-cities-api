@@ -1,0 +1,16 @@
+name: Deploy Render
+on:
+  workflow_run:
+    workflows: ["CD Docker Hub"]
+    branches: [main]
+    types:
+      - completed
+jobs:
+  deploy-render:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send deploy render
+        uses: Tyrrrz/action-http-request@1.1.2
+        with:
+          url:  https://api.render.com/deploy/${{ secrets.DEPLOY_RENDER }}
