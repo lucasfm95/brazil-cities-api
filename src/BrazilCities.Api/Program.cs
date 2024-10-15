@@ -24,6 +24,11 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
+app.UseCors(policyBuilder => 
+    policyBuilder
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());   
 app.UseAuthorization();
 app.MapControllers();
 app.UseHealthcheck();
