@@ -5,5 +5,5 @@ namespace BrazilCities.Application.Repositories;
 
 public interface ICityRepository : IRepository<CityEntity>
 {
-    Task<List<CityEntity>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken);
+    Task<ResponseEntityList<CityEntity>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken);
 }

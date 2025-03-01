@@ -10,4 +10,8 @@
       <ProjectReference Include="..\BrazilCities.Domain\BrazilCities.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+    </ItemGroup>
+
 </Project>

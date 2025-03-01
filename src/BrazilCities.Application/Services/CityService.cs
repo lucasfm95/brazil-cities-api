@@ -9,13 +9,12 @@ namespace BrazilCities.Application.Services;
 
 public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
 {
-    public async Task<IEnumerable<CityResponse?>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
+    public async Task<ResponseEntityList<CityEntity?>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
         var cities = await cityRepository.FindAllQueryParametersAsync(queryParametersCity, cancellationToken);
         
-        var cityResponses = cities.Select(ToCityResponse);
         
-        return cityResponses;
+        return cities;
     }
     
     public async Task<CityResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -60,7 +59,7 @@ public class CityService(ICityRepository cityRepository, IStateRepository stateR
         return await cityRepository.DeleteAsync(id, cancellationToken);
     }
     
-    private CityResponse? ToCityResponse(CityEntity? cityEntity)
+    public static CityResponse? ToCityResponse(CityEntity? cityEntity)
     {
         if (cityEntity is { State: not null })
             return new CityResponse
