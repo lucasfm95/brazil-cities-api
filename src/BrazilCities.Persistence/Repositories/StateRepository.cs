@@ -1,7 +1,10 @@
 using System.Linq.Expressions;
 using BrazilCities.Application.Repositories;
 using BrazilCities.Domain.Entities;
+using BrazilCities.Domain.Extensions;
 using BrazilCities.Domain.Requests.State;
+using BrazilCities.Domain.Responses;
+using BrazilCities.Domain.Responses.State;
 using BrazilCities.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +12,7 @@ namespace BrazilCities.Persistence.Repositories;
 
 public sealed class StateRepository(AppDbContext appDbContext) : RepositoryBase<StateEntity>(appDbContext), IStateRepository
 {
-    public async Task<List<StateEntity>> FindAllQueryParametersAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
+    public async Task<PagedListResponse<StateResponse>> FindAllQueryParametersAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
         var query = DbSet.AsQueryable();
 
@@ -17,15 +20,16 @@ public sealed class StateRepository(AppDbContext appDbContext) : RepositoryBase<
             query = FilterByName(queryParametersState, query);
 
         query = Sort(queryParametersState, query);
-
-        query = Pagination(queryParametersState, query);
-
-        return await query.ToListAsync(cancellationToken);
+        
+        var queryMapped = query
+            .Select(state => state.ToStateResponse());
+        
+        return await PagedListResponse<StateResponse>.CreateAsync(queryMapped, queryParametersState.Page, queryParametersState.PageSize);
     }
 
     public async Task<StateEntity?> FindByAcronymAsync(string acronym, CancellationToken cancellationToken)
     {
-        return await DbSet.FirstOrDefaultAsync(state => state.StateAcronym  == acronym.ToUpper(), cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(state => state.StateAcronym!.Equals(acronym, StringComparison.InvariantCultureIgnoreCase), cancellationToken);
     }
     
     private static Expression<Func<StateEntity, object>> GetSortProperty(QueryParametersState queryParametersState) =>

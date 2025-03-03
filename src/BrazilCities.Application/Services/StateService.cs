@@ -2,17 +2,16 @@ using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Entities;
 using BrazilCities.Domain.Requests.State;
+using BrazilCities.Domain.Responses;
 using BrazilCities.Domain.Responses.State;
 
 namespace BrazilCities.Application.Services;
 
 public sealed class StateService(IStateRepository stateRepository) : IStateService
 {
-    public async Task<IEnumerable<StateResponse>> GetAllAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
+    public async Task<PagedListResponse<StateResponse>> GetAllAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
-        var states = await stateRepository.FindAllQueryParametersAsync(queryParametersState, cancellationToken);
-        
-        return states.Select(ToStateResponse);
+        return await stateRepository.FindAllQueryParametersAsync(queryParametersState, cancellationToken);
     }
 
     public async Task<StateEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
@@ -58,17 +57,5 @@ public sealed class StateService(IStateRepository stateRepository) : IStateServi
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         return await stateRepository.DeleteAsync(id, cancellationToken);
-    }
-    
-    private StateResponse ToStateResponse(StateEntity stateEntity)
-    {
-        return new StateResponse
-        {
-            Id = stateEntity.Id,
-            Name = stateEntity.Name,
-            Acronym = stateEntity.StateAcronym,
-            CreatedAt = stateEntity.CreatedAt,
-            UpdatedAt = stateEntity.UpdatedAt
-        };
     }
 }

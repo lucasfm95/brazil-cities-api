@@ -1,3 +1,5 @@
+using BrazilCities.Domain.Responses.City;
+
 namespace BrazilCities.Domain.Responses.State;
 
 public class StateResponse : BaseResponse

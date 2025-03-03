@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
-using BrazilCities.Application;
 using BrazilCities.Application.Repositories;
 using BrazilCities.Domain.Entities;
+using BrazilCities.Domain.Extensions;
 using BrazilCities.Domain.Requests.City;
 using BrazilCities.Domain.Responses;
 using BrazilCities.Domain.Responses.City;
@@ -12,7 +12,8 @@ namespace BrazilCities.Persistence.Repositories;
 
 public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<CityEntity>(appDbContext), ICityRepository
 {
-    public async Task<ResponseEntityList<CityEntity>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
+    public async Task<PagedListResponse<CityResponse>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity,
+        CancellationToken cancellationToken)
     {
         var query = DbSet.AsQueryable();
 
@@ -23,8 +24,12 @@ public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<C
             query = FilterByStateAcronym(queryParametersCity, query);
 
         query = Sort(queryParametersCity, query);
-        
-        return await ResponseEntityList<CityEntity>.CreateAsync(query, queryParametersCity.Page, queryParametersCity.PageSize);
+
+        var queryInclude = query
+            .Include(city => city.State)
+            .Select(city => city.ToCityAndStateResponse());
+
+        return await PagedListResponse<CityResponse>.CreateAsync(queryInclude, queryParametersCity.Page, queryParametersCity.PageSize);
     }
 
     private static Expression<Func<CityEntity, object>> GetSortProperty(QueryParametersCity queryParametersCity) =>

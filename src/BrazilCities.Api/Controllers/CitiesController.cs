@@ -11,8 +11,7 @@ public class CitiesController(ILogger<CitiesController> logger, ICityService cit
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
-        var cities = await cityService.GetAllAsync(queryParametersCity, cancellationToken);
-        return Ok(cities);
+        return Ok(await cityService.GetAllAsync(queryParametersCity, cancellationToken));
     }
 
     [HttpGet("{id:int}")]

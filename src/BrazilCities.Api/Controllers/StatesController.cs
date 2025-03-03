@@ -11,8 +11,7 @@ public class StatesController(ILogger<StatesController> logger, IStateService st
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
-        var states = await stateService.GetAllAsync(queryParametersState, cancellationToken);
-        return Ok(states);
+        return Ok(await stateService.GetAllAsync(queryParametersState, cancellationToken));
     }
     
     [HttpGet("{id:int}")]

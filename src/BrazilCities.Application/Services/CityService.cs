@@ -1,7 +1,9 @@
 using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Entities;
+using BrazilCities.Domain.Extensions;
 using BrazilCities.Domain.Requests.City;
+using BrazilCities.Domain.Responses;
 using BrazilCities.Domain.Responses.City;
 using BrazilCities.Domain.Responses.State;
 
@@ -9,19 +11,16 @@ namespace BrazilCities.Application.Services;
 
 public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
 {
-    public async Task<ResponseEntityList<CityEntity?>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
+    public async Task<PagedListResponse<CityResponse>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
-        var cities = await cityRepository.FindAllQueryParametersAsync(queryParametersCity, cancellationToken);
-        
-        
-        return cities;
+        return await cityRepository.FindAllQueryParametersAsync(queryParametersCity, cancellationToken);
     }
     
     public async Task<CityResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
         var city = await cityRepository.FindByIdAsync(id, cancellationToken);
-        
-        return ToCityResponse(city);
+
+        return city.ToCityAndStateResponse();
     }
 
     public async Task<CityResponse?> CreateAsync(CityPostRequest cityPostRequest, CancellationToken cancellationToken)
@@ -41,7 +40,7 @@ public class CityService(ICityRepository cityRepository, IStateRepository stateR
 
         var city = await cityRepository.CreateAsync(cityEntity, cancellationToken);
 
-        return ToCityResponse(city);
+        return city.ToCityResponse();
     }
 
     public async Task<bool> UpdateAsync(CityPutRequest cityPutRequest, CancellationToken cancellationToken)
@@ -57,26 +56,5 @@ public class CityService(ICityRepository cityRepository, IStateRepository stateR
     public async Task<bool> DeleteAsync(int id, CancellationToken cancellationToken)
     {
         return await cityRepository.DeleteAsync(id, cancellationToken);
-    }
-    
-    public static CityResponse? ToCityResponse(CityEntity? cityEntity)
-    {
-        if (cityEntity is { State: not null })
-            return new CityResponse
-            {
-                Id = cityEntity.Id,
-                Name = cityEntity.Name,
-                CreatedAt = cityEntity.CreatedAt,
-                UpdatedAt = cityEntity.UpdatedAt,
-                State = new StateResponse
-                {
-                    Id = cityEntity.State.Id,
-                    Name = cityEntity.State.Name,
-                    Acronym = cityEntity.State.StateAcronym,
-                    CreatedAt = cityEntity.State.CreatedAt,
-                    UpdatedAt = cityEntity.State.UpdatedAt
-                }
-            };
-        return null;
     }
 }

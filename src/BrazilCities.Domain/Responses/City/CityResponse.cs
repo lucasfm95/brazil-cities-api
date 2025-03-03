@@ -4,6 +4,6 @@ namespace BrazilCities.Domain.Responses.City;
 
 public class CityResponse : BaseResponse
 {
-    public string? Name { get; set; }
+    public required string Name { get; set; }
     public StateResponse? State { get; set; }
 }
