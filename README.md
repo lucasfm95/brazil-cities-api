@@ -1,6 +1,6 @@
 # Brazil Cities API
 
-This is a .NET 8 project that provides a RESTful API for managing Brazil cities. The project is written in C# and uses several technologies and frameworks.
+This is a .NET 9 project that provides a RESTful API for managing Brazil cities. The project is written in C# and uses several technologies and frameworks.
 
 [![Build](https://github.com/lucasfm95/brazil-cities-api/actions/workflows/build.yml/badge.svg)](https://github.com/lucasfm95/brazil-cities-api/actions/workflows/build.yml)
 
@@ -12,7 +12,7 @@ Swagger documentation is available at [https://brazil-cities-api.onrender.com/sw
 
 ## Technologies Used
 
-- **.NET 8**: The latest version of the .NET framework, used for building high-performance, cross-platform applications.
+- **.NET 9**: The latest version of the .NET framework, used for building high-performance, cross-platform applications.
 - **C#**: The primary programming language used in this project.
 - **ASP.NET Core**: A framework for building web applications.
 - **Entity Framework Core**: An object-relational mapper (ORM) that simplifies data access by letting you work with relational data using domain-specific objects.

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BrazilCities.Api.Controllers;
 
 [Route("api/[controller]")]
-public class StatesController(ILogger<StatesController> logger, IStateService stateService) : ControllerBase
+public class StatesController(IStateService stateService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] QueryParametersState queryParametersState, CancellationToken cancellationToken)

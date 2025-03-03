@@ -11,7 +11,7 @@ namespace BrazilCities.Application.Services;
 
 public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
 {
-    public async Task<PagedListResponse<CityResponse>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
+    public async Task<PagedListResponse<CityResponse?>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
         return await cityRepository.FindAllQueryParametersAsync(queryParametersCity, cancellationToken);
     }

@@ -6,7 +6,7 @@ namespace BrazilCities.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class CitiesController(ILogger<CitiesController> logger, ICityService cityService) : ControllerBase
+public class CitiesController(ICityService cityService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] QueryParametersCity queryParametersCity, CancellationToken cancellationToken)

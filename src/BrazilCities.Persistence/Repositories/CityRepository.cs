@@ -12,7 +12,7 @@ namespace BrazilCities.Persistence.Repositories;
 
 public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<CityEntity>(appDbContext), ICityRepository
 {
-    public async Task<PagedListResponse<CityResponse>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity,
+    public async Task<PagedListResponse<CityResponse?>> FindAllQueryParametersAsync(QueryParametersCity queryParametersCity,
         CancellationToken cancellationToken)
     {
         var query = DbSet.AsQueryable();
@@ -29,7 +29,7 @@ public sealed class CityRepository(AppDbContext appDbContext) : RepositoryBase<C
             .Include(city => city.State)
             .Select(city => city.ToCityAndStateResponse());
 
-        return await PagedListResponse<CityResponse>.CreateAsync(queryInclude, queryParametersCity.Page, queryParametersCity.PageSize);
+        return await PagedListResponse<CityResponse?>.CreateAsync(queryInclude, queryParametersCity.Page, queryParametersCity.PageSize);
     }
 
     private static Expression<Func<CityEntity, object>> GetSortProperty(QueryParametersCity queryParametersCity) =>
