@@ -1,10 +1,10 @@
 using BrazilCities.Application.Services.Interfaces;
-using BrazilCities.Domain.Requests.City;
 using BrazilCities.Domain.Requests.State;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BrazilCities.Api.Controllers;
 
+[ApiController]
 [Route("api/[controller]")]
 public class StatesController(IStateService stateService) : ControllerBase
 {
