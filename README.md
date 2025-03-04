@@ -8,7 +8,7 @@ This is a .NET 9 project that provides a RESTful API for managing Brazil cities.
 
 The API is hosted on Render. You can access it at [https://brazil-cities-api.onrender.com](https://brazil-cities-api.onrender.com).
 
-Swagger documentation is available at [https://brazil-cities-api.onrender.com/swagger](https://brazil-cities-api.onrender.com/swagger/index.html).
+Documentation is available at [Swagger UI](https://brazil-cities-api.onrender.com/swagger/index.html) or [Scalar](https://brazil-cities-api.onrender.com/scalar/v1).
 
 ## Technologies Used
 
