@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using BrazilCities.Api.Configurations;
 using BrazilCities.Persistence.Context;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks()
@@ -15,14 +16,18 @@ builder.Services.AddControllers()
     });
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddServices();
 builder.Services.AddDbContext<AppDbContext>( contextLifetime: ServiceLifetime.Scoped, optionsLifetime: ServiceLifetime.Scoped);
 builder.Services.AddRepositories();
+builder.Services.AddOpenApi();
 
 var app = builder.Build();
-app.UseSwagger();
-app.UseSwaggerUI();
+app.MapOpenApi();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI v1");
+});
+app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.UseCors(policyBuilder => 
     policyBuilder
