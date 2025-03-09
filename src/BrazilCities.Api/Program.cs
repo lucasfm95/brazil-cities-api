@@ -11,14 +11,11 @@ builder.Services.AddHealthChecks()
                throw new Exception("CONNECTION_STRING_DB_POSTGRES not found"));
 
 builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-        //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
+    .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
+
 builder.Services.AddApiVersioning(options =>
 {
-    options.DefaultApiVersion = new ApiVersion(2, 0);
+    options.DefaultApiVersion = new ApiVersion(1, 0);
     options.AssumeDefaultVersionWhenUnspecified = true;
     options.ReportApiVersions = true;
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
@@ -47,8 +44,7 @@ app.UseSwaggerUI(options =>
 });
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
-app.UseCors(policyBuilder => 
-    policyBuilder
+app.UseCors(policyBuilder => policyBuilder
         .AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader());   
