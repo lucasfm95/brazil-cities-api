@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
 using BrazilCities.Api.Configurations;
@@ -7,7 +8,7 @@ using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHealthChecks()
-    .AddNpgSql(Environment.GetEnvironmentVariable("CONNECTION_STRING_DB_POSTGRES") ?? 
+    .AddNpgSql(Environment.GetEnvironmentVariable("CONNECTION_STRING_DB_POSTGRES") ??
                throw new Exception("CONNECTION_STRING_DB_POSTGRES not found"));
 
 builder.Services.AddControllers()
@@ -27,16 +28,30 @@ builder.Services.AddApiVersioning(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddServices();
-builder.Services.AddDbContext<AppDbContext>( contextLifetime: ServiceLifetime.Scoped, optionsLifetime: ServiceLifetime.Scoped);
+builder.Services.AddDbContext<AppDbContext>(contextLifetime: ServiceLifetime.Scoped, optionsLifetime: ServiceLifetime.Scoped);
 builder.Services.AddRepositories();
 builder.Services.AddOpenApi();
+
+builder.Services.AddRateLimiter(rateLimiterOptions =>
+{
+    rateLimiterOptions.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+    rateLimiterOptions.AddPolicy("fixed-by-ip", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
+            factory: _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1)
+            }));
+});
 
 var app = builder.Build();
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
     IReadOnlyCollection<ApiVersionDescription> descriptions = app.DescribeApiVersions();
-    
+
     foreach (ApiVersionDescription description in descriptions)
     {
         options.SwaggerEndpoint($"/openapi/v{description.ApiVersion.MajorVersion}.json", $"OpenAPI v{description.ApiVersion.MajorVersion}");
@@ -45,10 +60,11 @@ app.UseSwaggerUI(options =>
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.UseCors(policyBuilder => policyBuilder
-        .AllowAnyOrigin()
-        .AllowAnyMethod()
-        .AllowAnyHeader());   
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 app.UseAuthorization();
 app.MapControllers();
 app.UseHealthcheck();
+app.UseRateLimiter();
 app.Run();

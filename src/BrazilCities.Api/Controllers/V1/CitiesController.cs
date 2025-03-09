@@ -2,11 +2,13 @@ using Asp.Versioning;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Requests.City;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace BrazilCities.Api.Controllers.V1;
 
 [ApiController]
 [ApiVersion("1")]
+[EnableRateLimiting("fixed-by-ip")]
 [Route("api/v{version:apiVersion}/[controller]")]
 public class CitiesController(ICityService cityService) : ControllerBase
 {
