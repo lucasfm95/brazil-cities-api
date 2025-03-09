@@ -1,11 +1,13 @@
+using Asp.Versioning;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Requests.State;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrazilCities.Api.Controllers;
+namespace BrazilCities.Api.Controllers.V1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1.0")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class StatesController(IStateService stateService) : ControllerBase
 {
     [HttpGet]

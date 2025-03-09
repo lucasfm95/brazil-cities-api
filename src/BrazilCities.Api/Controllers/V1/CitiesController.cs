@@ -1,11 +1,13 @@
+using Asp.Versioning;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Requests.City;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BrazilCities.Api.Controllers;
+namespace BrazilCities.Api.Controllers.V1;
 
 [ApiController]
-[Route("api/[controller]")]
+[ApiVersion("1")]
+[Route("api/v{version:apiVersion}/[controller]")]
 public class CitiesController(ICityService cityService) : ControllerBase
 {
     [HttpGet]
@@ -23,18 +25,18 @@ public class CitiesController(ICityService cityService) : ControllerBase
         {
             return NoContent();
         }
-        
+
         return Ok(city);
     }
-    
+
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] CityPostRequest cityPostRequest, CancellationToken cancellationToken)
     {
         var city = await cityService.CreateAsync(cityPostRequest, cancellationToken);
-        
+
         return Created($"/api/cities/{city?.Id}", city);
     }
-    
+
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Put(int id, [FromBody] CityPutRequest cityPutRequest, CancellationToken cancellationToken)
     {
@@ -47,12 +49,12 @@ public class CitiesController(ICityService cityService) : ControllerBase
 
         return BadRequest();
     }
-    
+
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await cityService.DeleteAsync(id, cancellationToken);
-        
+
         if (result)
         {
             return Ok();

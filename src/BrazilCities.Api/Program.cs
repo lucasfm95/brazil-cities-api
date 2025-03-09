@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
 using BrazilCities.Api.Configurations;
 using BrazilCities.Persistence.Context;
 using Scalar.AspNetCore;
@@ -14,6 +16,17 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
         //options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
     });
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(2, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+}).AddMvc().AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddServices();
@@ -25,7 +38,12 @@ var app = builder.Build();
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/openapi/v1.json", "OpenAPI v1");
+    IReadOnlyCollection<ApiVersionDescription> descriptions = app.DescribeApiVersions();
+    
+    foreach (ApiVersionDescription description in descriptions)
+    {
+        options.SwaggerEndpoint($"/openapi/v{description.ApiVersion.MajorVersion}.json", $"OpenAPI v{description.ApiVersion.MajorVersion}");
+    }
 });
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
