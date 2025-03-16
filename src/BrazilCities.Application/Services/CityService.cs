@@ -9,7 +9,7 @@ using BrazilCities.Domain.Responses.State;
 
 namespace BrazilCities.Application.Services;
 
-public class CityService(ICityRepository cityRepository, IStateRepository stateRepository) : ICityService
+public class CityService(ICityRepository cityRepository, IStateRepository stateRepository, IDistributedCachingService distributedCachingService) : ICityService
 {
     public async Task<PagedListResponse<CityResponse?>> GetAllAsync(QueryParametersCity queryParametersCity, CancellationToken cancellationToken)
     {
@@ -18,7 +18,21 @@ public class CityService(ICityRepository cityRepository, IStateRepository stateR
     
     public async Task<CityResponse?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        var city = await cityRepository.FindByIdAsync(id, cancellationToken);
+        CityEntity? city = await distributedCachingService.GetAsync<CityEntity>($"city:{id}", cancellationToken);
+        
+        if (city is null)
+        {
+            city = await cityRepository.FindByIdAsync(id, cancellationToken);
+            
+            if (city is not null)
+            {
+                await distributedCachingService.SetAsync($"city:{id}", city, cancellationToken);
+            }
+        }
+        else
+        {
+            city.Name += city.Name + " (cached)";
+        }
 
         return city.ToCityAndStateResponse();
     }

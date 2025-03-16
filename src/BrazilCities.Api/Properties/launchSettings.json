@@ -9,7 +9,8 @@
       "applicationUrl": "http://localhost:5155",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "CONNECTION_STRING_DB_POSTGRES": "Host=localhost;Port=5432;Username=brazil-cities-api;Password=Dw4txvV0;Database=cities"
+        "CONNECTION_STRING_DB_POSTGRES": "Host=localhost;Port=5432;Username=brazil-cities-api;Password=Dw4txvV0;Database=cities",
+        "CONNECTION_STRING_REDIS": "localhost:6379"
       }
     }
   }

@@ -11,4 +11,8 @@
       <ProjectReference Include="..\BrazilCities.Domain\BrazilCities.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="StackExchange.Redis" Version="2.8.31" />
+    </ItemGroup>
+
 </Project>

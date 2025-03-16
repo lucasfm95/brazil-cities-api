@@ -2,6 +2,7 @@ using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Persistence.Repositories;
+using StackExchange.Redis;
 
 namespace BrazilCities.Api.Configurations;
 
@@ -17,5 +18,9 @@ public static class DependenciesInjections
     {
         services.AddScoped<IStateService, StateService>();
         services.AddScoped<ICityService, CityService>();
+        
+        var redis = ConnectionMultiplexer.Connect(Environment.GetEnvironmentVariable("CONNECTION_STRING_REDIS")!);
+        services.AddSingleton<IConnectionMultiplexer>(redis);
+        services.AddSingleton<IDistributedCachingService, DistributedCachingService>();
     }
 }
