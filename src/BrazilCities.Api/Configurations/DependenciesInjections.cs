@@ -1,6 +1,8 @@
+using BrazilCities.Application.Caching;
 using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services;
 using BrazilCities.Application.Services.Interfaces;
+using BrazilCities.Persistence.Caching;
 using BrazilCities.Persistence.Repositories;
 using StackExchange.Redis;
 
@@ -21,6 +23,6 @@ public static class DependenciesInjections
         
         var redis = ConnectionMultiplexer.Connect(Environment.GetEnvironmentVariable("CONNECTION_STRING_REDIS")!);
         services.AddSingleton<IConnectionMultiplexer>(redis);
-        services.AddSingleton<IDistributedCachingService, DistributedCachingService>();
+        services.AddSingleton<ICacheService, CacheService>();
     }
 }
