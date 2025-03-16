@@ -1,3 +1,4 @@
+using BrazilCities.Application.Caching;
 using BrazilCities.Application.Repositories;
 using BrazilCities.Application.Services.Interfaces;
 using BrazilCities.Domain.Entities;
@@ -7,7 +8,7 @@ using BrazilCities.Domain.Responses.State;
 
 namespace BrazilCities.Application.Services;
 
-public sealed class StateService(IStateRepository stateRepository) : IStateService
+public sealed class StateService(IStateRepository stateRepository, ICacheService cacheService) : IStateService
 {
     public async Task<PagedListResponse<StateResponse>> GetAllAsync(QueryParametersState queryParametersState, CancellationToken cancellationToken)
     {
@@ -16,7 +17,10 @@ public sealed class StateService(IStateRepository stateRepository) : IStateServi
 
     public async Task<StateEntity?> GetByIdAsync(int id, CancellationToken cancellationToken)
     {
-        return await stateRepository.FindByIdAsync(id, cancellationToken);
+        StateEntity? state = await cacheService.GetAsync($"state:{id}", 
+            async () => await stateRepository.FindByIdAsync(id, cancellationToken),  cancellationToken);
+        
+        return state;
     }
 
     public async Task<StateEntity?> GetByAcronymAsync(string acronym, CancellationToken cancellationToken)
