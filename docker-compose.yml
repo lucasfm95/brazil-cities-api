@@ -12,11 +12,12 @@ services:
         version: latest
     restart: unless-stopped
     ports:
-      - 8080:80
+      - "8080:80"
     networks:
       - brazil-cities-network
     depends_on:
       - postgres
+      - redis
 
   postgres:
     container_name: postgresDB
@@ -30,7 +31,16 @@ services:
       - ./postgres/:/docker-entrypoint-initdb.d/
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - "5432:5432"
+    networks:
+      - brazil-cities-network
+  
+  redis:
+    container_name: redis
+    image: redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
     networks:
       - brazil-cities-network
 

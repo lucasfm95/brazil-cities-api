@@ -5,7 +5,7 @@ using InitializeDataDb.Domain.Requests;
 
 Console.WriteLine("Process started");
 
-const string brazilCitiesApiUrl = "http://localhost:8080";
+const string brazilCitiesApiUrl = "http://localhost:5155";
 
 var httpClient = new HttpClient
 {
@@ -26,7 +26,7 @@ foreach (var state in statesCitiesFile.States)
 
     Console.WriteLine($"Creating state {stateRequest.Name}");
 
-    var stateResponse = await httpClient.PostAsJsonAsync("api/states", stateRequest);
+    var stateResponse = await httpClient.PostAsJsonAsync("api/v1/states", stateRequest);
 
     stateResponse.EnsureSuccessStatusCode();
 
@@ -38,7 +38,7 @@ foreach (var state in statesCitiesFile.States)
             StateAcronym = state.StateAcronym
         };
         
-        var cityResponse = await httpClient.PostAsJsonAsync("api/cities", cityRequest);
+        var cityResponse = await httpClient.PostAsJsonAsync("api/v1/cities", cityRequest);
 
         cityResponse.EnsureSuccessStatusCode();
     }

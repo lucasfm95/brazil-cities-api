@@ -29,7 +29,7 @@ public sealed class StateRepository(AppDbContext appDbContext) : RepositoryBase<
 
     public async Task<StateEntity?> FindByAcronymAsync(string acronym, CancellationToken cancellationToken)
     {
-        return await DbSet.FirstOrDefaultAsync(state => state.StateAcronym!.Equals(acronym, StringComparison.InvariantCultureIgnoreCase), cancellationToken);
+        return await DbSet.FirstOrDefaultAsync(state => state.StateAcronym!.ToUpper() == acronym.ToUpper(), cancellationToken);
     }
     
     private static Expression<Func<StateEntity, object>> GetSortProperty(QueryParametersState queryParametersState) =>
