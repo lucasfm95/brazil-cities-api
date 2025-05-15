@@ -5,6 +5,7 @@ services:
     image: brazil-cities-api:latest
     environment:
       - CONNECTION_STRING_DB_POSTGRES=${CONNECTION_STRING_DB_POSTGRES}
+      - CONNECTION_STRING_REDIS=${CONNECTION_STRING_REDIS}
     build:
       context: ./
       dockerfile: Dockerfile

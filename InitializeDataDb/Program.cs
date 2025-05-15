@@ -5,7 +5,7 @@ using InitializeDataDb.Domain.Requests;
 
 Console.WriteLine("Process started");
 
-const string brazilCitiesApiUrl = "http://localhost:5155";
+const string brazilCitiesApiUrl = "http://localhost:8080";
 
 var httpClient = new HttpClient
 {
