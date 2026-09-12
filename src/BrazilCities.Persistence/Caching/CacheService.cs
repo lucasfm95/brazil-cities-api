@@ -12,7 +12,7 @@ public class CacheService(IConnectionMultiplexer cache) : ICacheService
         
         var value = await db.StringGetAsync(key);
         
-        return string.IsNullOrEmpty( value ) ? null : JsonSerializer.Deserialize<T>(value! );
+        return string.IsNullOrEmpty( value ) ? null : JsonSerializer.Deserialize<T>((string)value! );
     }
 
     public async Task<T?> GetAsync<T>(string key, Func<Task<T?>> factory, CancellationToken cancellationToken = default) where T : class
