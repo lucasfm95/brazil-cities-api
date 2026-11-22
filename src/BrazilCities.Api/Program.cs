@@ -47,6 +47,7 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 });
 
 var app = builder.Build();
+await app.ApplyMigrationsAsync();
 app.MapOpenApi();
 app.UseSwaggerUI(options =>
 {
