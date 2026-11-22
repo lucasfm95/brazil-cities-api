@@ -1,9 +1,9 @@
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Asp.Versioning;
-using Asp.Versioning.ApiExplorer;
 using BrazilCities.Api.Configurations;
 using BrazilCities.Persistence.Context;
+using Microsoft.AspNetCore.HttpOverrides;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,23 +41,23 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
             partitionKey: httpContext.Connection.RemoteIpAddress?.ToString(),
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 10,
+                PermitLimit = 500,
                 Window = TimeSpan.FromMinutes(1)
             }));
 });
 
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    // The reverse proxy (Caddy) runs on a Docker network, not loopback, so the defaults would ignore its headers.
+    options.KnownIPNetworks.Clear();
+    options.KnownProxies.Clear();
+});
+
 var app = builder.Build();
+app.UseForwardedHeaders();
 await app.ApplyMigrationsAsync();
 app.MapOpenApi();
-app.UseSwaggerUI(options =>
-{
-    IReadOnlyCollection<ApiVersionDescription> descriptions = app.DescribeApiVersions();
-
-    foreach (ApiVersionDescription description in descriptions)
-    {
-        options.SwaggerEndpoint($"/openapi/v{description.ApiVersion.MajorVersion}.json", $"OpenAPI v{description.ApiVersion.MajorVersion}");
-    }
-});
 app.MapScalarApiReference();
 app.UseHttpsRedirection();
 app.UseCors(policyBuilder => policyBuilder
