@@ -6,14 +6,14 @@ A RESTful API for managing Brazilian states and cities, built with .NET 10 and C
 
 ## Try it out
 
-The API is hosted on Render. You can access it at [https://brazil-cities-api.onrender.com](https://brazil-cities-api.onrender.com).
+The API is hosted on a VPS and is available at [https://api.lucasfm95.dev](https://api.lucasfm95.dev).
 
-Documentation is available at [Swagger UI](https://brazil-cities-api.onrender.com/swagger/index.html) or [Scalar](https://brazil-cities-api.onrender.com/scalar/v1).
+Interactive documentation is available at [Scalar](https://api.lucasfm95.dev/scalar/v1). The raw OpenAPI document is served at [/openapi/v1.json](https://api.lucasfm95.dev/openapi/v1.json).
 
 ## Technologies Used
 
 - **.NET 10** / **C#**: The runtime and language used in all projects of the solution.
-- **ASP.NET Core**: Web framework, with API versioning (`Asp.Versioning`), OpenAPI, Swagger UI and Scalar.
+- **ASP.NET Core**: Web framework, with API versioning (`Asp.Versioning`), built-in OpenAPI (`Microsoft.AspNetCore.OpenApi`) and Scalar for the API reference.
 - **Entity Framework Core 10**: ORM and database versioning through migrations (Npgsql provider).
 - **PostgreSQL**: The database used for persisting data.
 - **Redis**: Cache for lookups by id.
@@ -33,7 +33,7 @@ Documentation is available at [Swagger UI](https://brazil-cities-api.onrender.co
 
 ## Endpoints
 
-All endpoints are versioned in the URL (`/api/v1/...`) and limited to 10 requests per minute per IP.
+All endpoints are versioned in the URL (`/api/v1/...`) and limited to 500 requests per minute per IP.
 
 | Resource | Endpoints |
 |---|---|
